@@ -1,0 +1,118 @@
+@font-face {
+  font-family: "MarkPro";
+  font-weight: normal;
+  src: url('../font/Mark.Pro.ttf');
+}
+
+@font-face {
+  font-family: "MarkPro";
+  font-weight: bold;
+  src: url('../font/Mark.Pro.Bold.ttf');
+}
+
+@font-face {
+  font-family: "MarkPro";
+  font-style: italic;
+  src: url('../font/Mark.Pro.Italic.ttf');
+}
+
+@font-face {
+  font-family: "MarkPro";
+  font-weight: 100
+  src: url('../font/Mark.Pro.Extra.Light.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-weight: 200;
+  src: url('../font/Mark.Pro.Thin.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-weight: 300;
+  src: url('../font/Mark.Pro.Book.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-weight: 400;
+  src: url('../font/Mark.Pro.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-weight: 500;
+  src: url('../font/Mark.Pro.Medium.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-weight: 600;
+  src: url('../font/Mark.Pro.Hairline.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-weight: 700;
+  src: url('../font/Mark.Pro.Bold.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-weight: 800;
+  src: url('../font/Mark.Pro.Black.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-weight: 900;
+  src: url('../font/Mark.Pro.Heavy.ttf');
+}
+
+@font-face {
+  font-family: "MarkPro";
+  font-style: italic;
+  font-weight: 100
+  src: url('../font/Mark.Pro.Extra.Light.Italic.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-style: italic;
+  font-weight: 200;
+  src: url('../font/Mark.Pro.Thin.Italic.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-style: italic;
+  font-weight: 300;
+  src: url('../font/Mark.Pro.Book.Italic.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-style: italic;
+  font-weight: 400;
+  src: url('../font/Mark.Pro.Italic.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-style: italic;
+  font-weight: 500;
+  src: url('../font/Mark.Pro.Medium.Italic.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-style: italic;
+  font-weight: 600;
+  src: url('../font/Mark.Pro.Hairline.Italic.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-style: italic;
+  font-weight: 700;
+  src: url('../font/Mark.Pro.Bold.Italic.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-style: italic;
+  font-weight: 800;
+  src: url('../font/Mark.Pro.Black.Italic.ttf');
+}
+@font-face {
+  font-family: "MarkPro";
+  font-style: italic;
+  font-weight: 900;
+  src: url('../font/Mark.Pro.Heavy.Italic.ttf');
+}

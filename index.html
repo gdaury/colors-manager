@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>neoXam paletton</title>
+	<link rel="stylesheet" href="https://rawcss.com/raw.css">
+	<style>
+		@import 'css/font.css';
+
+		body { font-family: MarkPro; background: #909090; color: var(--text); border: var(--border); border-radius: var(--border-radius); box-shadow: var(--box-shadow); transition: var(--transition); spacing: var(--spacing); }
+		.content { min-width: 400px; max-width: 1368px; margin: auto;}
+		.paletton > * { height: 50px; display: flex; flex: 1 1 300px; text-align: center; justify-content: center; flex-direction: column; font-weight: plain; font-size: 1em; text-transform: lowercase;}
+		.table { display: flex; min-width: 100%;}
+		.table > * { display: flex; min-width: 100%;}
+    .table > :first-child > * { background: rgba(0,0,0,0.7); color: white; text-transform: uppercase; }
+		.table > * > * { width: 100%; height: 50px; display: flex; text-align: center; justify-content: center; flex-direction: column; font-weight: plain; font-size: 1em; text-transform: lowercase;}
+
+		.slidecontainer { width: 100%; }
+		.slider { -webkit-appearance: none; appearance: none; width: 100%; height: 25px; background: #d3d3d3; outline: none; opacity: 0.7; }
+		.slider:hover { opacity: 1; }
+		.slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 25px; height: 25px; background: #0ed8b8; cursor: pointer; }
+		.slider::-moz-range-thumb { width: 25px; height: 25px; background: #0ed8b8; cursor: pointer; }
+
+		.segment { display: flex; flex-wrap: wrap; align-content: space-around; justify-content: flex-end; height: 20px}
+		.segment > :first-child { border-bottom-left-radius: 5px; border-bottom-right-radius: 0px; border-top-left-radius: 5px;border-top-right-radius: 0px; }
+		.segment > :last-child { border-bottom-left-radius: 0px; border-bottom-right-radius: 5px; border-top-left-radius: 0px;border-top-right-radius: 5px; }
+		.segment > * { color: #0ed8b8; border: 1px solid #0ed8b8; padding: 0px 10px 0px 10px; font-size: 10px; display: flex;  flex-direction: column; text-align: center; justify-content: center; font-weight: bold; cursor: pointer; }
+		.active {background: #0ed8b8; color: white; border: 0px; outline: none;}
+
+	</style>
+
+</head>
+<body>
+	<div class="container">
+		<div class="content center" id="content">
+
+			<div class="block">
+				<div class="segment">
+					<div tabindex="-1" @focus="value_mode='hex'" class="active">Hexa</div>
+					<div tabindex="-1" @focus="value_mode='rgb'">R.G.B</div>
+					<div tabindex="-1" @focus="value_mode='hsl'">H.S.L</div>
+				</div>
+				<div>
+					<h1>PRIMARY COLORS</H1>
+				</div>
+				<div class="paletton rows">
+					<div v-for="color in primary" v-bind:style="getColor(color)">{{getValue(color)}}</div>
+				</div>
+			</div>
+
+			<div class="block">
+				<div class="row between">
+					<h1>SECONDARY COLORS</h1>
+				</div>
+				<div class="table column">
+					<div class="row around">
+						<div>Base color</div>
+						<div>Brightness: {{brightness}} / Saturation: {{saturation}}</div>
+					</div>
+					<div v-for="color in secondary" class="row around">
+						<div v-bind:style="getColor(color)">{{getValue(color)}}</div>
+						<div v-bind:style="getColor(shadeColor(color))">{{getValue(shadeColor(color))}}</div>
+					</div>
+				</div>
+				<div class="column">
+					<div>Move the slider below to change brightness of secondary color set.</div>
+					<div class="row">
+						<img src="imgs/brightness.png" style="height: 25px; " alt="">
+						<input type="range" min="-50" max="50" class="slider" v-model="brightness">
+					</div>
+					<div>Move the slider below to change saturation of secondary color set.</div>
+					<div class="row">
+						<img src="imgs/saturation.jpg"  style="height: 25px; " alt="">
+						<input type="range" min="-50" max="50" class="slider" v-model="saturation">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="//unpkg.com/vue"></script>
+	<script src="//unpkg.com/axios/dist/axios.js"></script>
+	<script>
+	window.addEventListener('load',function(){
+		var segment_holder = document.getElementsByClassName("segment")[0];
+		var segments = segment_holder.getElementsByTagName('div');
+		for (var i = 0; i < segments.length; i++) {
+		  segments[i].addEventListener("click", function() {
+				var current = document.getElementsByClassName("active");
+		    current[0].className = current[0].className.replace("active", "");
+		    this.className += " active";
+		  });
+		}
+	})
+
+	function hexToRgb(hex){
+		var num = parseInt(hex, 16);
+		r = (num >> 16);
+		g = (num >> 8 & 0x00FF);
+		b = (num & 0x0000FF);
+		return [r, g, b];
+	}
+
+	function rgbToHex(r, g, b){
+		return (0x1000000 + (r < 255 ? r < 1 ? 0 : r : 255) * 0x10000 + (g < 255 ? g < 1 ? 0 : g : 255) * 0x100 + (b < 255 ? b < 1 ? 0 : b : 255)).toString(16).slice(1)
+	}
+
+	function rgbToHsl(r, g, b) {
+		r /= 255, g /= 255, b /= 255;
+		var max = Math.max(r, g, b),
+			min = Math.min(r, g, b);
+		var h, s, l = (max + min) / 2;
+		if (max == min) {
+			h = s = 0;
+		} else {
+			var d=max - min; s=l> 0.5 ? d / (2 - max - min) : d / (max + min);
+			switch (max) {
+				case r:
+					h = (g - b) / d + (g < b ? 6 : 0);
+					break;
+				case g:
+					h = (b - r) / d + 2;
+					break;
+				case b:
+					h = (r - g) / d + 4;
+					break;
+			}
+			h /= 6;
+		}
+		// return [Math.round(h*360), Math.round(s*100), Math.round(l*100)];
+		return [h, s, l];
+	}
+
+	function hslToRgb(h, s, l) {
+		// h /=360, s /=100, l /=100;
+		var r, g, b;
+		if (s == 0) {
+			r = g = b = l;
+		 } else {
+			function hue2rgb(p, q, t) {
+				if (t < 0) t += 1;
+				if (t > 1) t -= 1;
+				if (t < 1 / 6) return p + (q - p) * 6 * t;
+				if (t < 1 / 2) return q;
+				if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+				return p;
+			}
+			var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+			var p = 2 * l - q;
+			r = hue2rgb(p, q, h + 1 / 3);
+			g = hue2rgb(p, q, h);
+			b = hue2rgb(p,
+				q, h - 1 / 3);
+		}
+		return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+	}
+
+// Vue declaration
+	new Vue({
+			el: '#content',
+			data: {
+				brightness: '0',
+				saturation: '0',
+				primary: [],
+				secondary: [],
+				value_mode: 'hex',
+			},
+			methods: {
+				getValue: function(value){
+					switch (this.value_mode){
+						case 'rgb':
+							return hexToRgb(value);
+							break;
+						case 'hsl':
+							rgb= hexToRgb(value);
+							hsl=rgbToHsl(rgb[0], rgb[1], rgb[2]);
+							return [Math.round(hsl[0]*360), Math.round(hsl[1]*100), Math.round(hsl[2]*100)]
+							break;
+						default:
+							return '0x'+value;
+							break;
+					}
+				},
+				getColor: function(color) {
+					toreturn = 'background: #' + color + '; ';
+
+					var num = parseInt(color, 16);
+					R = (num >> 16);
+					G = (num >> 8 & 0x00FF);
+					B = (num & 0x0000FF);
+					bright = (R * 299 + G * 587 + B * 114) / 1000;
+
+					if (bright > 128) {
+						return toreturn + 'color: black; ';
+					}
+					return toreturn + 'color: white; ';
+				},
+				shadeColor: function(color) {
+					rgb=hexToRgb(color);
+					hsl=rgbToHsl(rgb[0], rgb[1], rgb[2]);
+					hsl[2]=this.brightness/100+hsl[2];
+					hsl[1]=this.saturation/100+hsl[1];
+					rgb=hslToRgb(hsl[0], hsl[1], hsl[2]);
+					hex=rgbToHex(rgb[0], rgb[1], rgb[2]);
+					return hex;
+				},
+			},
+			mounted() {
+				axios.get('resources/color_list.json').then(result => {
+						this.primary = result.data.primary;
+						this.secondary = result.data.secondary;
+					})
+					.catch(exception => console.error(exception.toString() + "Exception getting source data."))
+			}
+		})
+	</script>
+</body>
+
+</html>
