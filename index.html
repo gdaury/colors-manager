@@ -27,36 +27,34 @@
 		.slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 25px; height: 25px; background: #0ed8b8; cursor: pointer; }
 		.slider::-moz-range-thumb { width: 25px; height: 25px; background: #0ed8b8; cursor: pointer; }
 
-		.segment { display: flex; flex-wrap: wrap; align-content: space-around; justify-content: flex-end; }
+		.segment { display: flex; flex-wrap: wrap; align-content: space-around; justify-content: center; }
 		.segment { height: 20px}
 		.segment > :first-child { border-bottom-left-radius: 5px; border-bottom-right-radius: 0px; border-top-left-radius: 5px;border-top-right-radius: 0px; }
 		.segment > :last-child { border-bottom-left-radius: 0px; border-bottom-right-radius: 5px; border-top-left-radius: 0px;border-top-right-radius: 5px; }
-		.segment > * { color: #0ed8b8; border: 1px solid #0ed8b8; padding: 0px 10px 0px 10px; font-size: 10px; font-weight: bold; cursor: pointer; }
+		.segment > * { border: 1px solid #0ed8b8; padding: 0px 10px 0px 10px; font-weight: bold; cursor: pointer; }
 		.segment > * { display: flex;  flex-direction: column; text-align: center; justify-content: center; }
-		.active {background: #0ed8b8; color: white; border: 0px; outline: none;}
-
+		.active {background: #0ed8b8; border: 0px; outline: none;}
 	</style>
-
 </head>
 <body>
+	<h1><center>COLORS MANAGER</center></h1>
 	<div class="container">
 		<div class="content block" id="content">
-
 				<div class="segment">
-					<div tabindex="-1" @focus="value_mode='hex'" class="active">Hexa</div>
-					<div tabindex="-1" @focus="value_mode='rgb'">R.G.B</div>
-					<div tabindex="-1" @focus="value_mode='hsl'">H.S.L</div>
+					<div tt="View Hexadecimal values" tabindex="-1" @focus="value_mode='hex'" class="active">Hexa</div>
+					<div tt="View RGB values [0-255, 0-255, 0-255]" tabindex="-1" @focus="value_mode='rgb'">R.G.B</div>
+					<div tt="View HSL values [0-360, 0-100, 0-100]" tabindex="-1" @focus="value_mode='hsl'">H.S.L</div>
 				</div>
-				<h1>PRIMARY COLORS</H1>
+				<h2>PRIMARY COLORS</H2>
 				<div class="paletton rows">
 					<div v-for="color in primary" v-bind:style="getColorStyle(color)">{{getValue(color)}}</div>
 				</div>
 				<br>
-				<h1>SECONDARY COLORS</h1>
+				<h2>SECONDARY COLORS</h2>
 				<div class="table">
 					<div>
 						<div>Base color</div>
-						<div>Brightness: {{brightness}} / Saturation: {{saturation}}</div>
+						<div>Brightness: {{brightness}}% / Saturation: {{saturation}}%</div>
 					</div>
 					<div v-for="color in secondary">
 						<div v-bind:style="getColorStyle(color)">{{getValue(color)}}</div>
@@ -67,11 +65,11 @@
 				<div>
 					<div tt="Move the slider to change brightness of secondary color set." class="row">
 						<img src="imgs/brightness.png" style="height: 25px; " alt="">
-						<input type="range" min="-50" max="50" class="slider" v-model="brightness">
+						<input type="range" min="-100" max="100" class="slider" v-model="brightness">
 					</div>
 					<div tt="Move the slider to change saturation of secondary color set." class="row">
 						<img src="imgs/saturation.jpg"  style="height: 25px; " alt="">
-						<input type="range" min="-50" max="50" class="slider" v-model="saturation">
+						<input type="range" min="-100" max="100" class="slider" v-model="saturation">
 					</div>
 				</div>
 			</div>
@@ -80,7 +78,6 @@
 	<script src="//unpkg.com/vue"></script>
 	<script src="//unpkg.com/axios/dist/axios.js"></script>
 	<script>
-
 	window.addEventListener('load',function(){
 		var segment_holder = document.getElementsByClassName("segment")[0];
 		var segments = segment_holder.getElementsByTagName('div');
@@ -202,8 +199,8 @@
 				},
 				shadeColor: function(hex) {
 					hsl=hexToHsl(hex);
-					hsl[2]=this.brightness/100+hsl[2];
-					hsl[1]=this.saturation/100+hsl[1];
+					hsl[2]=this.brightness/200+hsl[2];
+					hsl[1]=this.saturation/200+hsl[1];
 					return hslToHex(hsl);
 				},
 			},
@@ -217,5 +214,4 @@
 		})
 	</script>
 </body>
-
 </html>
