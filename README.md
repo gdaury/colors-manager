@@ -1,6 +1,6 @@
 # colors-manager
 
-Color manager is a simple tool loading primary and secondary set of colors from a graphical chart (json file has hexa codes of colors).
+Color manager is a simple tool loading primary and secondary set of colors from a graphical charter (json file has hexa codes of colors).
 Enable switching from hexa to rgb or hsl.
 Enables moving saturation and light of secondary set of colors.
 
