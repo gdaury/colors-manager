@@ -11,15 +11,11 @@
 
 		body { font-family: MarkPro; background: #909090; }
 		.content { min-width: 350px; max-width: 1368px; margin: auto;}
-		.paletton > * { height: 50px; display: flex; flex: 1 1 300px; }
-		.paletton > * { text-align: center; justify-content: center; flex-direction: column; }
-		.paletton > * { font-size: 1em; text-transform: lowercase; }
+		.paletton > * { height: 50px; display: flex; flex: 1 1 300px;text-align: center; justify-content: center; flex-direction: column;font-size: 1em; text-transform: lowercase; }
 
 		.table > * { display: flex; flex-direction: row; }
 		.table > :first-child > * { background: #eee; color: black; text-transform: uppercase; font-weight: bold; }
-		.table > * > * { display: flex; text-align: center; justify-content: center; flex-direction: column; }
-		.table > * > * { width: 100%; height: 50px; }
-		.table > * > * { font-size: 1em; text-transform: lowercase; }
+		.table > * > * { display: flex; text-align: center; justify-content: center; flex-direction: column;width: 100%; height: 50px;font-size: 1em; text-transform: lowercase; }
 
 		.slidecontainer { width: 100%; }
 		.slider { -webkit-appearance: none; appearance: none; width: 100%; height: 25px; background: #d3d3d3; opacity: 0.7; }
@@ -31,9 +27,8 @@
 		.segment { height: 20px}
 		.segment > :first-child { border-bottom-left-radius: 5px; border-bottom-right-radius: 0px; border-top-left-radius: 5px;border-top-right-radius: 0px; }
 		.segment > :last-child { border-bottom-left-radius: 0px; border-bottom-right-radius: 5px; border-top-left-radius: 0px;border-top-right-radius: 5px; }
-		.segment > * { border: 1px solid #0ed8b8; padding: 0px 10px 0px 10px; font-weight: bold; cursor: pointer; }
-		.segment > * { display: flex;  flex-direction: column; text-align: center; justify-content: center; }
-		.active {background: #0ed8b8; border: 0px; outline: none;}
+		.segment > * { border: 1px solid #0ed8b8; padding: 0px 10px 0px 10px; font-weight: bold; cursor: pointer;display: flex;  flex-direction: column; text-align: center; justify-content: center; }
+		.active { background: #0ed8b8;border: 0px;outline: none; }
 	</style>
 </head>
 <body>
@@ -41,13 +36,13 @@
 	<div class="container">
 		<div class="content block" id="content">
 				<div class="segment">
-					<div tt="View Hexadecimal values" tabindex="-1" @focus="value_mode='hex'" class="active">Hexa</div>
-					<div tt="View RGB values [0-255, 0-255, 0-255]" tabindex="-1" @focus="value_mode='rgb'">R.G.B</div>
-					<div tt="View HSL values [0-360, 0-100, 0-100]" tabindex="-1" @focus="value_mode='hsl'">H.S.L</div>
+					<div tt="View Hexadecimal values" @click="value_mode='hex'" :class="{ active: !value_mode || value_mode === 'hex' }">Hexa</div>
+					<div tt="View RGB values [0-255, 0-255, 0-255]" @click="value_mode='rgb'" :class="{ active: value_mode === 'rgb' }">R.G.B</div>
+					<div tt="View HSL values [0-360, 0-100, 0-100]" @click="value_mode='hsl'" :class="{ active: value_mode === 'hsl' }">H.S.L</div>
 				</div>
 				<h2>PRIMARY COLORS</H2>
 				<div class="paletton rows">
-					<div v-for="color in primary" v-bind:style="getColorStyle(color)">{{getValue(color)}}</div>
+					<div v-for="color in primary" :style="getColorStyle(color)">{{getValue(color)}}</div>
 				</div>
 				<br>
 				<h2>SECONDARY COLORS</h2>
@@ -57,8 +52,8 @@
 						<div>Brightness: {{brightness}}% / Saturation: {{saturation}}%</div>
 					</div>
 					<div v-for="color in secondary">
-						<div v-bind:style="getColorStyle(color)">{{getValue(color)}}</div>
-						<div v-bind:style="getColorStyle(shadeColor(color))">{{getValue(shadeColor(color))}}</div>
+						<div :style="getColorStyle(color)">{{getValue(color)}}</div>
+						<div :style="getColorStyle(shadeColor(color))">{{getValue(shadeColor(color))}}</div>
 					</div>
 				</div>
 				<br>
@@ -78,24 +73,11 @@
 	<script src="//unpkg.com/vue"></script>
 	<script src="//unpkg.com/axios/dist/axios.js"></script>
 	<script>
-	window.addEventListener('load',function(){
-		var segment_holder = document.getElementsByClassName("segment")[0];
-		var segments = segment_holder.getElementsByTagName('div');
-		for (var i = 0; i < segments.length; i++) {
-		  segments[i].addEventListener("click", function() {
-				var current = document.getElementsByClassName("active");
-		    current[0].className = current[0].className.replace("active", "");
-		    this.className += " active";
-		  });
-		}
-	})
 
+//Color management functions
 	function hexToRgb(hex){
 		var num = parseInt(hex, 16);
-		r = (num >> 16);
-		g = (num >> 8 & 0x00FF);
-		b = (num & 0x0000FF);
-		return [r, g, b];
+		return [num >> 16, num >> 8 & 0x00FF, num & 0x0000FF]
 	}
 
 	function rgbToHex(r, g, b){
@@ -103,72 +85,67 @@
 	}
 
 	function rgbToHsl(r, g, b) {
-		r /= 255, g /= 255, b /= 255;
+		r /= 255, g /= 255, b /= 255
 		var max = Math.max(r, g, b),
-			min = Math.min(r, g, b);
-		var h, s, l = (max + min) / 2;
-		if (max == min) {
-			h = s = 0;
-		} else {
-			var d=max - min; s=l> 0.5 ? d / (2 - max - min) : d / (max + min);
+		   	min = Math.min(r, g, b)
+		var h, s, l = (max + min) / 2
+		if (max == min) h = s = 0
+		else {
+			var d=max - min; s=l> 0.5 ? d / (2 - max - min) : d / (max + min)
 			switch (max) {
 				case r:
-					h = (g - b) / d + (g < b ? 6 : 0);
-					break;
+					h = (g - b) / d + (g < b ? 6 : 0)
+					break
 				case g:
-					h = (b - r) / d + 2;
-					break;
+					h = (b - r) / d + 2
+					break
 				case b:
-					h = (r - g) / d + 4;
-					break;
+					h = (r - g) / d + 4
+					break
 			}
-			h /= 6;
+			h /= 6
 		}
-		return [h, s, l];
+		return [h, s, l]
 	}
 
 	function hslToRgb(h, s, l) {
-		var r, g, b;
+		var r, g, b
 		if (s == 0) {
-			r = g = b = l;
+			r = g = b = l
 		 } else {
 			function hue2rgb(p, q, t) {
-				if (t < 0) t += 1;
-				if (t > 1) t -= 1;
-				if (t < 1 / 6) return p + (q - p) * 6 * t;
-				if (t < 1 / 2) return q;
-				if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-				return p;
+				if (t < 0) t += 1
+				if (t > 1) t -= 1
+				if (t < 1 / 6) return p + (q - p) * 6 * t
+				if (t < 1 / 2) return q
+				if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6
+				return p
 			}
-			var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-			var p = 2 * l - q;
-			r = hue2rgb(p, q, h + 1 / 3);
-			g = hue2rgb(p, q, h);
-			b = hue2rgb(p,
-				q, h - 1 / 3);
+			var q = l < 0.5 ? l * (1 + s) : l + s - l * s
+			var p = 2 * l - q
+			r = hue2rgb(p, q, h + 1 / 3)
+			g = hue2rgb(p, q, h)
+			b = hue2rgb(p, q, h - 1 / 3)
 		}
-		return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+		return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)]
 	}
 
 	function hexToHsl(hex){
-		rgb= hexToRgb(hex);
-		return rgbToHsl(rgb[0], rgb[1], rgb[2]);
+		rgb= hexToRgb(hex)
+		return rgbToHsl(rgb[0], rgb[1], rgb[2])
 	}
 
 	function hslToHex(hsl){
-		rgb= hslToRgb(hsl[0], hsl[1], hsl[2]);
-		return rgbToHex(rgb[0], rgb[1], rgb[2]);
+		rgb= hslToRgb(hsl[0], hsl[1], hsl[2])
+		return rgbToHex(rgb[0], rgb[1], rgb[2])
 	}
 
 	function getBrightness(color){
-		var num = parseInt(color, 16);
-		R = (num >> 16);
-		G = (num >> 8 & 0x00FF);
-		B = (num & 0x0000FF);
-		return (R * 299 + G * 587 + B * 114) / 1000;
+		rgb = hexToRgb(color)
+		return (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000
 	}
 
-// Vue declaration
+	// Vue declaration
 	new Vue({
 			el: '#content',
 			data: {
@@ -179,38 +156,30 @@
 				value_mode: 'hex',
 			},
 			methods: {
-				getValue: function(hex){
-					if(this.value_mode=='rgb'){
-						return hexToRgb(hex);
-					}
+				getValue(hex){
+					if(this.value_mode=='rgb') return hexToRgb(hex)
 					if(this.value_mode=='hsl'){
-						hsl=hexToHsl(hex);
+						hsl=hexToHsl(hex)
 						return [Math.round(hsl[0]*360), Math.round(hsl[1]*100), Math.round(hsl[2]*100)]
 					}
 					return '0x'+hex;
 				},
-				getColorStyle: function(hex) {
-					toreturn = 'background: #' + hex + '; ';
-					bright = getBrightness(hex);
-					if (bright > 128) {
-						return toreturn + 'color: black; ';
-					}
-					return toreturn + 'color: white; ';
+				getColorStyle(hex) {
+					toreturn = 'background: #' + hex + '; '
+					bright = getBrightness(hex)
+					if (bright > 128) return toreturn + 'color: black; '
+					return toreturn + 'color: white; '
 				},
-				shadeColor: function(hex) {
-					hsl=hexToHsl(hex);
-					hsl[2]=this.brightness/200+hsl[2];
-					hsl[1]=this.saturation/200+hsl[1];
-					return hslToHex(hsl);
+				shadeColor(hex) {
+					hsl=hexToHsl(hex)
+					hsl[1]=this.saturation/200+hsl[1]
+					hsl[2]=this.brightness/200+hsl[2]
+					return hslToHex(hsl)
 				},
 			},
 			mounted() {
-				axios.get('resources/color_list.json').then(result => {
-						this.primary = result.data.primary;
-						this.secondary = result.data.secondary;
-					})
-					.catch(exception => console.error(exception.toString() + "Exception getting source data."))
-			}
+				axios.get('resources/color_list.json').then(result => { this.primary = result.data.primary, this.secondary = result.data.secondary })
+			},
 		})
 	</script>
 </body>
